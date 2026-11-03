@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}[hidden]{display:none!important}</style>
+<title>Hành Trình An Toàn</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: một cột hẹp như tấm vé, thanh chuyển mục ở trên, kết quả đóng dấu như dấu hải quan */
+:root {
+  --bg: #eef2f4;
+  --surface: #ffffff;
+  --ink: #11222b;
+  --muted: #55676f;
+  --line: #cfd9de;
+  --accent: #0e5a6b;
+  --accent-ink: #ffffff;
+  --accent-soft: #dcebef;
+  --ok: #1e7b4f;
+  --ok-bg: #e1f2e9;
+  --warn: #8f5a00;
+  --warn-bg: #fbefd2;
+  --bad: #b3261e;
+  --bad-bg: #fbe3e1;
+  --font-display: "Bricolage Grotesque", "Be Vietnam Pro", system-ui, sans-serif;
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1a20; --surface: #162830; --ink: #e6eef1; --muted: #9db0b8; --line: #2b4049;
+    --accent: #5bc0d6; --accent-ink: #0f1a20; --accent-soft: #1b3a44;
+    --ok: #5ed39b; --ok-bg: #173a2b; --warn: #f0b44c; --warn-bg: #3d2f12; --bad: #ff8a80; --bad-bg: #44201e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1a20; --surface: #162830; --ink: #e6eef1; --muted: #9db0b8; --line: #2b4049;
+  --accent: #5bc0d6; --accent-ink: #0f1a20; --accent-soft: #1b3a44;
+  --ok: #5ed39b; --ok-bg: #173a2b; --warn: #f0b44c; --warn-bg: #3d2f12; --bad: #ff8a80; --bad-bg: #44201e;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+header { display: flex; flex-direction: column; gap: 8px; }
+header h1 { font-size: clamp(30px, 8vw, 42px); font-weight: 800; letter-spacing: -.01em; }
+header p { color: var(--muted); max-width: 52ch; }
+
+nav { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 2px solid var(--line); }
+nav a {
+  text-align: center; padding: 12px 6px; font-weight: 600; font-size: 15px; color: var(--muted);
+  text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -2px;
+}
+nav a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible + label { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.panel { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.lead { color: var(--muted); }
+
+button.btn {
+  font: inherit; font-weight: 600; cursor: pointer; border-radius: 8px; padding: 12px 16px; text-align: left;
+  border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+}
+button.btn.ghost { background: transparent; color: var(--accent); }
+button.btn:hover { filter: brightness(1.08); }
+
+/* kiểm tra */
+.q { border: 0; margin: 0; padding: 14px 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.q:first-of-type { border-top: 0; padding-top: 0; }
+.q legend { padding: 0; font-weight: 500; }
+.q .n { font-family: var(--font-mono); color: var(--muted); font-size: 13px; margin-right: 6px; }
+.opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.opts input { position: absolute; opacity: 0; pointer-events: none; }
+.opts label {
+  text-align: center; padding: 9px 4px; border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer;
+  font-size: 14px; font-weight: 500; background: var(--surface);
+}
+.opts input:checked + label { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+#progress { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+
+.result { border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 14px; border: 1.5px solid var(--line); background: var(--surface); }
+.result.ok { background: var(--ok-bg); border-color: var(--ok); }
+.result.warn { background: var(--warn-bg); border-color: var(--warn); }
+.result.bad { background: var(--bad-bg); border-color: var(--bad); }
+.stamp {
+  align-self: flex-start; font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+  border: 2.5px solid currentColor; border-radius: 6px; padding: 4px 10px; transform: rotate(-3deg);
+}
+.ok .stamp { color: var(--ok); } .warn .stamp { color: var(--warn); } .bad .stamp { color: var(--bad); }
+.result h3 { font-size: 22px; }
+.result ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.result .sub { font-weight: 600; font-size: 14px; }
+.hint { color: var(--muted); font-size: 14px; }
+
+/* truyện */
+.story-text { font-size: 17px; line-height: 1.7; max-width: 60ch; }
+.choices { display: flex; flex-direction: column; gap: 10px; }
+.lesson { background: var(--accent-soft); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+.lesson b { color: var(--accent); }
+.lesson p { font-size: 15px; }
+.steps { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+.end-title { font-size: 26px; }
+.lessons-list { display: flex; flex-direction: column; gap: 10px; }
+
+/* hỗ trợ */
+.contact { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.contact:first-of-type { border-top: 0; }
+.contact .num { font-family: var(--font-mono); font-size: 20px; font-weight: 500; color: var(--accent); user-select: all; }
+.contact .what { min-width: 0; flex: 1 1 200px; }
+.contact .what small { display: block; color: var(--muted); font-size: 14px; }
+.tips { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
+@media (prefers-reduced-motion: no-preference) { .panel > * { animation: rise .25s ease-out both; } }
+@keyframes rise { from { opacity: .0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+.q { flex-direction: row !important; align-items: flex-start; gap: 0 !important; padding: 0 !important; border-top: 0 !important; position: relative; }
+.q input[type=checkbox] { position: absolute; opacity: 0; pointer-events: none; }
+.tick { display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 12px 12px; border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer; background: var(--surface); }
+.tick::before { content: ""; flex: none; width: 22px; height: 22px; margin-top: 2px; border: 2px solid var(--muted); border-radius: 5px; background: var(--surface); }
+.q input:checked + .tick { border-color: var(--accent); background: var(--accent-soft); }
+.q input:checked + .tick::before { background: var(--accent); border-color: var(--accent); content: "\2713"; color: var(--accent-ink); font-weight: 700; text-align: center; line-height: 18px; font-size: 15px; }
+.q input:focus-visible + .tick { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tick .n { font-family: var(--font-mono); color: var(--muted); font-size: 13px; margin-top: 3px; }
+.tick .tt { min-width: 0; }
+#form { gap: 10px; }
+a.btn { display: inline-block; text-decoration: none; font: inherit; font-weight: 600; border-radius: 8px; padding: 12px 16px; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); }
+.ask { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid currentColor; padding-top: 14px; }
+.fields { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
+.fields input { font: inherit; padding: 11px 12px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); min-width: 0; }
+@media (max-width: 520px) { .fields { grid-template-columns: 1fr; } }
+.fb { border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; border: 1.5px solid var(--line); }
+.fb p { font-size: 15px; }
+.fb.good { background: var(--ok-bg); border-color: var(--ok); }
+.fb.bad { background: var(--warn-bg); border-color: var(--warn); }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Đi làm, đi học, lấy chồng ở xa</span>
+    <h1>Hành Trình An Toàn</h1>
+    <p>Có người vừa mời bạn hoặc người nhà đi làm xa? Kiểm tra lời mời đó trước khi chuyển tiền hay đưa giấy tờ cho ai.</p>
+  </header>
+
+  <nav aria-label="Các mục">
+    <a href="#kiem-tra" data-tab="kiem-tra">Kiểm tra</a>
+    <a href="#cau-chuyen" data-tab="cau-chuyen">Luyện tập</a>
+    <a href="#ho-tro" data-tab="ho-tro">Cần giúp</a>
+  </nav>
+
+  <main>
+    <!-- KIỂM TRA -->
+    <section class="panel" id="tab-kiem-tra" hidden>
+      <div class="card">
+        <h2>Lời mời này có đáng lo không?</h2>
+        <p class="lead">Nghĩ về lời mời bạn hoặc người thân đang nhận, rồi tích những câu đang đúng. Không chắc thì cứ tích, thà cảnh báo thừa còn hơn bỏ sót. Bạn không cần nhập tên hay số điện thoại, và câu trả lời không bị lưu lại.</p>
+        <div class="row">
+          <button class="btn ghost" id="sample" type="button">Xem một ví dụ</button>
+          <button class="btn ghost" id="reset" type="button">Xóa hết</button>
+        </div>
+      </div>
+      <form class="card" id="form" autocomplete="off"></form>
+      <div id="progress" aria-live="polite"></div>
+      <div id="result" aria-live="polite"></div>
+    </section>
+
+    <!-- CÂU CHUYỆN -->
+    <section class="panel" id="tab-cau-chuyen" hidden>
+      <div class="card" id="story"></div>
+      <div id="story-lessons"></div>
+    </section>
+
+    <!-- HỖ TRỢ -->
+    <section class="panel" id="tab-ho-tro" hidden>
+      <div class="card">
+        <h2>Cần giúp ngay</h2>
+        <p class="lead">Nếu bạn hoặc người thân đang gặp nguy hiểm, hãy gọi ngay. Chạm vào số để chọn rồi sao chép.</p>
+        <div>
+          <div class="contact"><div class="what">Công an, trường hợp khẩn cấp<small>Trong nước, mọi lúc</small></div><span class="num">113</span></div>
+          <div class="contact"><div class="what">Tổng đài quốc gia bảo vệ trẻ em<small>Khi nạn nhân là trẻ em dưới 18 tuổi</small></div><span class="num">111</span></div>
+          <div class="contact"><div class="what">Bảo hộ công dân, Bộ Ngoại giao<small>Công dân đang ở nước ngoài, mọi lúc</small></div><span class="num">+84 981 84 84 84</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Đầu mối hỗ trợ tại địa phương</h3>
+        <p class="lead">Mỗi địa phương có đầu mối khác nhau. Hỏi UBND xã, phường nơi bạn ở để biết cán bộ phụ trách lao động và xã hội. Có số rồi thì ghi vào đây để lần sau khỏi tìm. Thông tin chỉ lưu trên máy của bạn.</p>
+        <div class="fields">
+          <input id="local-name" type="text" placeholder="Tên đơn vị hoặc cán bộ" aria-label="Tên đơn vị hoặc cán bộ">
+          <input id="local-phone" type="text" inputmode="tel" placeholder="Số điện thoại" aria-label="Số điện thoại">
+          <button class="btn" id="local-save" type="button">Lưu</button>
+        </div>
+        <div id="local-view"></div>
+      </div>
+      <div class="card">
+        <h3>Nếu bạn đang ở nước ngoài và bị giữ giấy tờ</h3>
+        <ul class="tips">
+          <li>Chụp hoặc ghi lại số hộ chiếu, địa chỉ, tên người liên quan. Gửi cho một người thân tin cậy.</li>
+          <li>Liên hệ đại sứ quán hoặc lãnh sự quán Việt Nam tại nước đó.</li>
+          <li>Bạn là người bị hại. Bạn không có lỗi vì đã tin một lời mời.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Trước khi đi làm ở nước ngoài</h3>
+        <ul class="tips">
+          <li>Tra tên doanh nghiệp trong danh sách được cấp phép đưa người lao động đi làm việc ở nước ngoài do cơ quan quản lý nhà nước về lao động công bố.</li>
+          <li>Đọc hợp đồng bằng tiếng Việt trước khi ký, và giữ một bản.</li>
+          <li>Tự giữ hộ chiếu và giấy tờ của mình.</li>
+          <li>Nói với gia đình nơi đến, tên người tuyển và cách liên lạc.</li>
+          <li>Lưu tin nhắn, hóa đơn, chứng từ chuyển tiền.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>Kết quả chỉ để tham khảo, không thay thế tư vấn của cơ quan chức năng hoặc luật sư. Câu trả lời của bạn không được lưu hay gửi đi. Đầu mối địa phương nếu bạn ghi chỉ lưu trên máy này.</footer>
+</div>
+
+<script>
+(function () {
+  var TABS = ['kiem-tra', 'cau-chuyen', 'ho-tro'];
+
+  function route() {
+    var h = (location.hash || '').replace('#', '');
+    if (TABS.indexOf(h) < 0) h = TABS[0];
+    TABS.forEach(function (t) {
+      document.getElementById('tab-' + t).hidden = t !== h;
+    });
+    document.querySelectorAll('nav a').forEach(function (a) {
+      if (a.dataset.tab === h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('hashchange', route);
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+
+  /* ---------- KIỂM TRA ---------- */
+  var QS = [
+    { t: 'Người hoặc công ty tuyển không cho bạn biết tên pháp lý, giấy phép, hoặc bạn không kiểm tra được.', w: 3, why: 'Đưa người đi làm việc ở nước ngoài phải do doanh nghiệp được cấp phép thực hiện, hoặc theo hợp đồng được đăng ký đúng quy định.' },
+    { t: 'Bạn phải chuyển tiền (phí hồ sơ, giữ chỗ, môi giới) trước khi có hợp đồng chính thức.', w: 3, why: 'Thu tiền trước khi có hợp đồng rõ ràng là dấu hiệu thường gặp của lừa đảo hoặc môi giới trái phép.' },
+    { t: 'Lương rất cao, việc nhẹ, không cần kinh nghiệm hay ngoại ngữ.', w: 2, why: 'Lời hứa quá tốt so với mặt bằng chung thường dùng để lôi kéo người đang cần việc.' },
+    { t: 'Bạn chưa được xem hợp đồng bằng tiếng Việt, hoặc hợp đồng mơ hồ về công việc, lương, thời hạn.', w: 3, why: 'Không có điều khoản rõ ràng thì bạn không có căn cứ đòi quyền lợi khi bị vi phạm.' },
+    { t: 'Có người yêu cầu giữ hộ hộ chiếu hoặc giấy tờ tùy thân của bạn.', w: 3, crit: true, why: 'Giữ giấy tờ của người lao động là cách phổ biến để kiểm soát và ép buộc họ.' },
+    { t: 'Bạn bị giục quyết định gấp, hoặc được dặn đừng nói với gia đình và người ngoài.', w: 3, why: 'Ép thời gian và cô lập khỏi người thân làm bạn khó kiểm chứng và khó tìm giúp đỡ.' },
+    { t: 'Bạn được bảo đi bằng visa du lịch, thăm thân hoặc visa khác loại, nhưng sẽ đi làm.', w: 3, why: 'Làm việc sai mục đích nhập cảnh khiến bạn dễ bị coi là vi phạm, nên dễ bị đe dọa và phụ thuộc.' },
+    { t: 'Lộ trình đi qua nước thứ ba, đường tiểu ngạch, hoặc không xác định rõ ai đón khi đến nơi.', w: 3, why: 'Đi không qua kênh chính thức làm mất khả năng được bảo hộ và truy vết khi có sự cố.' },
+    { t: 'Công việc và nơi làm việc được mô tả mơ hồ ("làm nhà hàng", "việc nhẹ") và không có địa chỉ cụ thể.', w: 2, why: 'Không biết nơi làm việc và chủ sử dụng thì không ai có thể tìm bạn khi cần.' },
+    { t: 'Bạn bị đề nghị vay nợ hoặc thế chấp tài sản cho người môi giới, hoặc trả "nợ đường đi" sau khi đến nơi.', w: 2, why: 'Nợ không rõ ràng là công cụ phổ biến để giữ người ở lại làm việc không công.' }
+  ];
+  var answers = new Array(QS.length).fill(0);
+  var shown = false;
+
+  var form = document.getElementById('form');
+  var checks = [];
+  QS.forEach(function (q, i) {
+    var row = el('div', 'q');
+    var id = 'q' + i;
+    var inp = el('input'); inp.type = 'checkbox'; inp.id = id;
+    inp.addEventListener('change', function () { answers[i] = inp.checked ? 1 : 0; render(); });
+    checks.push(inp);
+    var lab = el('label', 'tick'); lab.htmlFor = id;
+    lab.appendChild(el('span', 'n', String(i + 1).padStart(2, '0')));
+    lab.appendChild(el('span', 'tt', q.t));
+    row.appendChild(inp); row.appendChild(lab);
+    form.appendChild(row);
+  });
+  var showBtn = el('button', 'btn', 'Xem kết quả'); showBtn.type = 'button'; showBtn.id = 'show';
+  showBtn.addEventListener('click', function () { shown = true; render(); });
+  form.appendChild(showBtn);
+
+  function setAnswers(arr) {
+    answers = arr.slice();
+    checks.forEach(function (c, i) { c.checked = answers[i] === 1; });
+    render();
+  }
+  document.getElementById('sample').addEventListener('click', function () {
+    shown = true;
+    setAnswers([1, 1, 1, 1, 1, 1, 0, 1, 1, 0]);
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    shown = false;
+    setAnswers(new Array(QS.length).fill(0));
+  });
+
+  var ACTIONS = {
+    bad: ['Dừng chuyển tiền và dừng trao đổi giấy tờ ngay.', 'Không giao hộ chiếu hay giấy tờ cho bất kỳ ai giữ hộ.', 'Lưu tin nhắn, số tài khoản, chứng từ chuyển tiền. Báo công an địa phương (113) hoặc báo cho người thân tin cậy.', 'Nếu đã ở nước ngoài, liên hệ cơ quan đại diện Việt Nam. Xem mục Hỗ trợ.'],
+    warn: ['Chưa quyết định và chưa chuyển tiền. Hỏi lại các điểm còn mơ hồ bằng văn bản.', 'Tra doanh nghiệp trong danh sách được cấp phép, xin hợp đồng bằng tiếng Việt.', 'Nói với người thân hoặc cán bộ lao động, Hội Phụ nữ, đoàn thể ở địa phương trước khi đi.'],
+    ok: ['Vẫn kiểm tra tên pháp lý và giấy phép của đơn vị tuyển.', 'Đọc kỹ hợp đồng, tự giữ giấy tờ của mình.', 'Cho gia đình biết nơi đến và cách liên lạc.']
+  };
+
+  function render() {
+    var ticked = answers.filter(function (x) { return x === 1; }).length;
+    var prog = document.getElementById('progress');
+    var box = document.getElementById('result');
+    box.textContent = '';
+    if (!shown) {
+      prog.textContent = 'Bạn đã tích ' + ticked + '/' + QS.length + ' dấu hiệu.';
+      return;
+    }
+    prog.textContent = '';
+    var score = 0, crit = false, flags = [];
+    QS.forEach(function (q, i) {
+      if (answers[i] === 1) { score += q.w; flags.push(q); if (q.crit) crit = true; }
+    });
+    var level;
+    if (crit || score >= 7) level = 'bad';
+    else if (score >= 3) level = 'warn';
+    else level = 'ok';
+    var T = {
+      bad: ['Rủi ro cao', 'Có nhiều dấu hiệu đáng lo. Hãy dừng lại.'],
+      warn: ['Cần thận trọng', 'Có một số dấu hiệu cần làm rõ trước khi tiến thêm.'],
+      ok: ['Chưa thấy dấu hiệu rõ', 'Vẫn nên xác minh, vì kết quả chỉ dựa trên điều bạn biết lúc này.']
+    };
+    var r = el('div', 'result ' + level);
+    r.appendChild(el('span', 'stamp', T[level][0]));
+    r.appendChild(el('h3', null, T[level][1]));
+    if (flags.length) {
+      r.appendChild(el('p', 'sub', 'Dấu hiệu đã tích và vì sao đáng chú ý'));
+      var ul = el('ul');
+      flags.forEach(function (q) { ul.appendChild(el('li', null, q.why)); });
+      r.appendChild(ul);
+    }
+    r.appendChild(el('p', 'sub', 'Nên làm ngay'));
+    var ul2 = el('ul');
+    ACTIONS[level].forEach(function (a) { ul2.appendChild(el('li', null, a)); });
+    r.appendChild(ul2);
+    r.appendChild(el('p', 'hint', 'Công cụ này chỉ nhắc điều cần kiểm tra, không kết luận ai đó phạm tội và không thay thế tư vấn của cơ quan chức năng.'));
+
+    var ask = el('div', 'ask');
+    ask.appendChild(el('p', 'sub', level === 'ok' ? 'Bạn có cần hỗ trợ thêm không?' : 'Bạn hoặc người thân có đang cần hỗ trợ không?'));
+    var br = el('div', 'row');
+    var yes = el('a', 'btn', 'Có, cho mình xem nơi giúp đỡ'); yes.href = '#ho-tro';
+    var no = el('button', 'btn ghost', 'Chưa, để mình xem lại'); no.type = 'button';
+    no.addEventListener('click', function () { form.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    br.appendChild(yes); br.appendChild(no);
+    ask.appendChild(br);
+    r.appendChild(ask);
+    box.appendChild(r);
+    if (box.scrollIntoView) { try { box.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {} }
+  }
+  render();
+
+  /* ---------- ĐẦU MỐI ĐỊA PHƯƠNG ---------- */
+  var KEY = 'htat-local';
+  var lname = document.getElementById('local-name'), lphone = document.getElementById('local-phone'), lview = document.getElementById('local-view');
+  function loadLocal() {
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+  }
+  function showLocal() {
+    var d = loadLocal();
+    lview.textContent = '';
+    if (d && (d.name || d.phone)) {
+      var c = el('div', 'contact');
+      var w = el('div', 'what'); w.appendChild(document.createTextNode(d.name || 'Đầu mối địa phương')); w.appendChild(el('small', null, 'Đã lưu trên máy này'));
+      c.appendChild(w); c.appendChild(el('span', 'num', d.phone || ''));
+      lview.appendChild(c);
+    } else {
+      lview.appendChild(el('p', 'hint', 'Bạn chưa lưu đầu mối nào.'));
+    }
+  }
+  document.getElementById('local-save').addEventListener('click', function () {
+    try { localStorage.setItem(KEY, JSON.stringify({ name: lname.value.trim(), phone: lphone.value.trim() })); } catch (e) {}
+    showLocal();
+  });
+  showLocal();
+
+  /* ---------- LUYỆN TẬP ---------- */
+  var SC = {
+    start: {
+      text: 'Lan, 22 tuổi, vừa nghỉ việc ở xưởng may. Tối nay chị Hạnh, quen qua một nhóm Zalo, nhắn: có chỗ phục vụ nhà hàng ở nước ngoài, lương 40 triệu một tháng, không cần ngoại ngữ, bay trong 10 ngày. Chị xin trước 15 triệu "phí giữ chỗ" và nhắn thêm: "Còn 2 suất, em quyết nhanh nhé."',
+      choices: [
+        { t: 'Chuyển tiền ngay để giữ suất', good: false, to: 'pay', why: 'Giục quyết nhanh và thu tiền trước khi có hợp đồng là dấu hiệu thường gặp của lừa đảo hoặc môi giới trái phép.' },
+        { t: 'Hỏi tên công ty và xin xem hợp đồng', good: true, to: 'ask', why: 'Đơn vị tuyển hợp pháp sẵn sàng cho bạn biết tên pháp lý, giấy phép và hợp đồng bằng tiếng Việt.' },
+        { t: 'Kể với mẹ rồi mới quyết', good: true, to: 'mom', why: 'Người tuyển bất hợp pháp hay dặn bạn giữ kín. Nói với người thân giúp kiểm chứng nhanh hơn.' }
+      ]
+    },
+    pay: {
+      text: 'Lan chuyển 15 triệu. Hôm sau chị Hạnh báo: Lan sẽ đi bằng visa du lịch cho nhanh, đến nơi có người đón, việc "sắp xếp sau". Chị dặn Lan gửi hộ chiếu cho một người bên chị giữ "cho tiện làm thủ tục".',
+      choices: [
+        { t: 'Đưa hộ chiếu', good: false, to: 'passport', why: 'Hộ chiếu là giấy tờ của riêng bạn. Giữ giấy tờ của người lao động là cách phổ biến để kiểm soát họ.' },
+        { t: 'Dừng lại, đòi xem hợp đồng và giấy phép', good: true, to: 'ask', why: 'Dừng lại lúc này vẫn tốt hơn đi tiếp. Số tiền đã chuyển cần được lưu bằng chứng.' }
+      ]
+    },
+    ask: {
+      text: 'Chị Hạnh né tránh: "Công ty nước ngoài không làm vậy đâu, em tin chị." Rồi chị chỉ trả lời cụt lủn, không đưa hợp đồng.',
+      choices: [
+        { t: 'Tự tra danh sách doanh nghiệp được cấp phép đưa lao động đi nước ngoài', good: true, to: 'end_check', why: 'Tự kiểm tra là cách chắc nhất, đừng chỉ dựa vào lời người tuyển.' },
+        { t: 'Vẫn tin vì chị là người quen', good: false, to: 'pay', why: 'Người quen không thay được hợp đồng và giấy phép. Né câu hỏi này đã là một dấu hiệu.' }
+      ]
+    },
+    mom: {
+      text: 'Mẹ Lan không muốn con đi vội. Hai mẹ con đến hỏi cán bộ phụ trách lao động ở xã. Cán bộ nói: đi làm việc ở nước ngoài hợp pháp phải qua doanh nghiệp có giấy phép hoặc theo hợp đồng được đăng ký, và không ai được giữ hộ chiếu của bạn.',
+      choices: [
+        { t: 'Nhờ cán bộ cùng kiểm tra đơn vị của chị Hạnh', good: true, to: 'end_check', why: 'Cán bộ địa phương biết nơi tra cứu và có thể hỗ trợ bạn.' },
+        { t: 'Nghe vậy nhưng vẫn chuyển tiền vì sợ mất suất', good: false, to: 'pay', why: 'Sợ mất cơ hội là điều người lừa đảo muốn bạn cảm thấy.' }
+      ]
+    },
+    passport: {
+      text: 'Lan đến nơi. Công việc không như đã hứa: không có hợp đồng, người đón nói Lan phải làm để trả "nợ đường đi", và hộ chiếu vẫn bị giữ. Lan sợ. Cô nhớ ra mẹ đã nhét vào ví một tờ giấy ghi số điện thoại bảo hộ công dân.',
+      choices: [
+        { t: 'Liên hệ cơ quan đại diện Việt Nam và đường dây hỗ trợ', good: true, to: 'end_help', why: 'Xin giúp đỡ sớm là việc nên làm, dù bạn đang sợ hay xấu hổ.' },
+        { t: 'Im lặng làm theo vì sợ', good: false, to: 'end_silent', why: 'Im lặng làm bạn mắc kẹt lâu hơn. Bạn không có lỗi khi bị lừa.' }
+      ]
+    },
+    end_check: { end: 'Lan dừng lại kịp', text: 'Đơn vị chị Hạnh nhắc đến không có trong danh sách được cấp phép. Lan dừng trao đổi, lưu lại tin nhắn và báo cho công an địa phương. Nếu đã lỡ chuyển tiền, tin nhắn và chứng từ chuyển khoản giúp việc xử lý dễ hơn.' },
+    end_help: { end: 'Lan được hỗ trợ', text: 'Lan liên hệ cơ quan đại diện của Việt Nam ở nước sở tại và đường dây hỗ trợ, rồi được tiếp nhận. Hỗ trợ cho người bị hại thường gồm nơi ở an toàn, y tế, tâm lý, pháp lý và giúp về nước. Quá trình cần thời gian, nhưng Lan không còn phải đối mặt một mình.' },
+    end_silent: { end: 'Chưa muộn để xin giúp đỡ', text: 'Lan im lặng thêm vài tuần, ngày càng kiệt sức. Rồi cô nhớ ra mình vẫn có thể xin giúp đỡ, và chuyện bị lừa không phải lỗi của cô. Lan quyết định tìm đến người có thể giúp.' }
+  };
+
+  var story = document.getElementById('story');
+  var lessonsBox = document.getElementById('story-lessons');
+  var picked = [];
+
+  function go(id, from) {
+    var n = SC[id];
+    story.textContent = '';
+    lessonsBox.textContent = '';
+    story.appendChild(el('span', 'steps', n.end ? 'Kết thúc' : 'Nếu là Lan, bạn sẽ làm gì?'));
+    if (from) {
+      var fb = el('div', 'fb ' + (from.good ? 'good' : 'bad'));
+      fb.appendChild(el('b', null, (from.good ? 'Lựa chọn tốt: ' : 'Cần cân nhắc lại: ') + from.t));
+      fb.appendChild(el('p', null, from.why));
+      story.appendChild(fb);
+    }
+    if (n.end) story.appendChild(el('h2', 'end-title', n.end));
+    story.appendChild(el('p', 'story-text', n.text));
+    var ch = el('div', 'choices');
+    if (n.choices) {
+      n.choices.forEach(function (c) {
+        var b = el('button', 'btn', c.t); b.type = 'button';
+        b.addEventListener('click', function () { picked.push(c); go(c.to, c); });
+        ch.appendChild(b);
+      });
+    } else {
+      var again = el('button', 'btn', 'Thử cách khác'); again.type = 'button';
+      again.addEventListener('click', function () { picked = []; go('start'); });
+      ch.appendChild(again);
+      var seen = {};
+      var card = el('div', 'card');
+      card.appendChild(el('h3', null, 'Bạn đã chọn'));
+      var wrap = el('div', 'lessons-list');
+      picked.forEach(function (c) {
+        if (seen[c.t]) return; seen[c.t] = 1;
+        var d = el('div', 'fb ' + (c.good ? 'good' : 'bad'));
+        d.appendChild(el('b', null, (c.good ? 'Tốt: ' : 'Cần cân nhắc lại: ') + c.t));
+        d.appendChild(el('p', null, c.why));
+        wrap.appendChild(d);
+      });
+      card.appendChild(wrap);
+      lessonsBox.appendChild(card);
+    }
+    story.appendChild(ch);
+  }
+  go('start');
+
+  route();
+})();
+</script>
+
+</html>
